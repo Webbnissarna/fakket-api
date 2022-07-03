@@ -7,6 +7,7 @@ export function getHoldingStock(
   depth: number
 ): Stock | null {
   if (!checkDepth(depth)) {
+    return null;
     throw new GQLError(
       `Max query depth of ${Deno.env.get("MAX_QUERY_DEPTH")} reached.`
     );

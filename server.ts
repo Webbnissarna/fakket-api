@@ -74,6 +74,7 @@ const resolvers = {
 
 const GraphQLService = await applyGraphQL<Router>({
   Router,
+  path: "/",
   typeDefs: types,
   resolvers: resolvers,
   context: () => {

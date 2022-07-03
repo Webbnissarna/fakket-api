@@ -6,6 +6,7 @@ import { checkDepth } from "../error.ts";
 import { GQLError } from "https://deno.land/x/oak_graphql@0.6.3/mod.ts";
 export function getUser(userId: string, depth: number) {
   if (!checkDepth(depth)) {
+    return null;
     throw new GQLError(
       `Max query depth of ${Deno.env.get("MAX_QUERY_DEPTH")} reached.`
     );
@@ -14,7 +15,7 @@ export function getUser(userId: string, depth: number) {
     if (potentialUser) {
       return {
         ...potentialUser,
-        holdings: getUserHoldings(potentialUser.holdings, depth),
+        holdings: getUserHoldings(potentialUser.holdings, depth + 1),
       };
     }
     return null;
@@ -23,12 +24,13 @@ export function getUser(userId: string, depth: number) {
 
 export function getUsers(limit: number, depth: number) {
   if (!checkDepth(depth)) {
+    return null;
     throw new GQLError(
       `Max query depth of ${Deno.env.get("MAX_QUERY_DEPTH")} reached.`
     );
   } else {
     const usersWithHoldings = users.slice(0, limit).map((user) => {
-      const userHoldings = getUserHoldings(user.holdings, depth);
+      const userHoldings = getUserHoldings(user.holdings, depth + 1);
       return {
         ...user,
         holdings: userHoldings,
@@ -43,7 +45,8 @@ function getUserHoldings(
   userHoldings: Array<string>,
   depth: number
 ): Array<Holding | null> {
-  if (checkDepth(depth)) {
+  if (!checkDepth(depth)) {
+    return [];
     throw new GQLError(
       `Max query depth of ${Deno.env.get("MAX_QUERY_DEPTH")} reached.`
     );
@@ -59,8 +62,8 @@ function getUserHoldings(
         }
         return {
           ...holding,
-          stock: getHoldingStock(holding.stockId, depth),
-          company: getCompany(holding.company, depth),
+          stock: getHoldingStock(holding.stockId, depth + 1),
+          company: getCompany(holding.company, depth + 1),
         };
       });
   }
