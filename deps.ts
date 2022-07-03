@@ -4,3 +4,5 @@ export {
   applyGraphQL,
   gql,
 } from "https://deno.land/x/oak_graphql@0.6.3/mod.ts";
+
+export { config as dotEnvConfig } from "https://deno.land/x/dotenv@v3.2.0/mod.ts";

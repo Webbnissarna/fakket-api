@@ -44,15 +44,35 @@ export const companies = [
 ];
 export const stocks = [
   {
-    priceHistory: [10000, 9650, 9320, 6432, 8921, 11921],
+    priceHistory: [
+      { value: 60, updateDate: "2022-05-20T10:48:03.692Z" },
+      { value: 68, updateDate: "2022-05-19T10:48:03.692Z" },
+      { value: 45, updateDate: "2022-05-18T10:48:03.692Z" },
+      { value: 57, updateDate: "2022-05-17T10:48:03.692Z" },
+      { value: 67, updateDate: "2022-05-16T10:48:03.692Z" },
+      { value: 56, updateDate: "2022-05-15T10:48:03.692Z" },
+    ],
     currency: "SEK",
     id: "S078121",
-    latestUpdate: "2022-05-15T10:41:37.604Z",
   },
   {
-    priceHistory: [10000, 11021, 12001, 10021, 11921, 12876],
+    priceHistory: [
+      { value: 40, updateDate: "2022-05-20T10:48:03.692Z" },
+      { value: 43, updateDate: "2022-05-19T10:48:03.692Z" },
+      { value: 41, updateDate: "2022-05-18T10:48:03.692Z" },
+      { value: 35, updateDate: "2022-05-17T10:48:03.692Z" },
+      { value: 37, updateDate: "2022-05-16T10:48:03.692Z" },
+      { value: 34, updateDate: "2022-05-15T10:48:03.692Z" },
+    ],
     currency: "SEK",
     id: "S078365",
-    latestUpdate: "2022-05-15T10:48:03.692Z",
   },
+];
+export const Prices = [
+  { value: 60, updateDate: "2022-05-20T10:48:03.692Z", stockId: "S078121" },
+  { value: 68, updateDate: "2022-05-19T10:48:03.692Z", stockId: "S078121" },
+  { value: 45, updateDate: "2022-05-18T10:48:03.692Z", stockId: "S078121" },
+  { value: 57, updateDate: "2022-05-17T10:48:03.692Z", stockId: "S078121" },
+  { value: 67, updateDate: "2022-05-16T10:48:03.692Z", stockId: "S078121" },
+  { value: 56, updateDate: "2022-05-15T10:48:03.692Z", stockId: "S078121" },
 ];

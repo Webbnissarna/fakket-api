@@ -1,56 +1,41 @@
-import { gql } from "https://deno.land/x/oak_graphql@0.6.3/mod.ts";
+export type Price = {
+  value: number;
+  updateDate: Date;
+};
 
 export type Stock = {
   id: string;
   latestUpdate: string;
-  priceHistory: Array<number>;
+  currency: string;
+  priceHistory: {
+    history: Array<Price>;
+    m1: number | null;
+    m3: number | null;
+    m6: number | null;
+    m12: number | null;
+    m24: number | null;
+    m60: number | null;
+    m120: number | null;
+  };
 };
-export const GQLStock = gql`
-  type Stock {
-    id: String!
-    latestUpdate: String!
-    priceHistory: [Float!]!
-  }
-`;
+
 export type Company = {
   name: string;
   industry: number;
   country: string;
   orgId: string;
-  owners: Array<User>;
+  owners: Array<User | null>;
 };
-export const GQLCompany = gql`
-  type Company {
-    name: String!
-    industry: Int!
-    country: String!
-    orgId: String!
-    owners: [User!]!
-  }
-`;
+
 export type Holding = {
-  stockId: string;
+  stock: Stock | null;
   id: string;
   count: number;
-  company: Company;
+  company: Company | null;
 };
-export const GQLHolding = gql`
-  type Holding {
-    company: Company!
-    count: Int!
-    stockId: String!
-    id: String!
-  }
-`;
+
 export type User = {
   name: string;
-  holdings: Array<string>;
+  holdings: Array<Holding | null>;
   id: string;
 };
-export const GQLUser = gql`
-  type User {
-    name: String!
-    holdings: [Holding!]!
-    id: String!
-  }
-`;
