@@ -3,7 +3,7 @@ import { Application, Router } from "https://deno.land/x/oak@v10.5.1/mod.ts";
 import {
   applyGraphQL,
   gql,
-} from "https://deno.land/x/oak_graphql@0.6.3/mod.ts";
+} from "https://deno.land/x/oak_graphql@0.6.4/mod.ts";
 
 import { users, stocks } from "./db.ts";
 
