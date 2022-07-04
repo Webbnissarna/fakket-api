@@ -1,4 +1,4 @@
-export type StockData = {
+export type Stock = {
   companyName: string,
   priceHistory: number[],
   currentPrice: number,
@@ -9,13 +9,13 @@ export type StockData = {
   industry: number,
 }
 
-export type UserData = {
+export type User = {
   id: string
   name: string
-  holdings: StockData['id'][]
+  holdings: Stock['id'][]
 }
 
-export const users: UserData[] = [
+export const users: User[] = [
   {
     id: "X1231296A",
     name: "André Åström 1",
@@ -91,7 +91,7 @@ export const users: UserData[] = [
     }],
   },
 ];
-export const stocks: StockData[] = [
+export const stocks: Stock[] = [
   {
     companyName: "Future infinite",
     priceHistory: [10000, 9650, 9320, 6432, 8921, 11921],

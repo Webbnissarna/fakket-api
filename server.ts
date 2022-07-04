@@ -9,16 +9,7 @@ import * as base64 from "https://deno.land/x/base64to@v1.0.0/mod.ts";
 
 import { users, stocks } from "./db.ts";
 
-import type { UserData, StockData } from './db.ts';
-
-type Stock = StockData
-
-type User = Omit<UserData, 'holdings'> & {
-  holdings: Stock[]
-}
-
 type ConnectionCursor = string;
-
 
 const PREFIX = 'arrayconnection:';
 
@@ -222,6 +213,10 @@ type UserWhereInput = {
   id?: WhereArgs
 }
 
+type UserUniqueWhereInput = {
+  id: string
+}
+
 type StockWhereInput = {
   id?: WhereArgs
 }
@@ -327,7 +322,7 @@ const types = gql`
     industry: Int
     currentPrice: Int
     currency: String
-    owner: UserEdgeConnection!
+    owners: UserEdgeConnection!
   }
 
   type User {
@@ -337,8 +332,7 @@ const types = gql`
   }
 
   type Query {
-    getUser(id: String!): User
-    getUsers: [User]
+    user(id: String!): User
     users(
       after: String = "",
       before: String = "",
@@ -347,8 +341,7 @@ const types = gql`
       orderBy: UserOrderByInput,
       where: UserWhereInput
     ): UserEdgeConnection!
-    getStock(id: String!): Stock
-    getStocks: [Stock]
+    stock(id: String!): Stock
     stocks(
       after: String = "",
       before: String = "",
@@ -361,36 +354,49 @@ const types = gql`
 `;
 
 const resolvers = {
+  Stock: {
+    owners: (source, args, ctx, info) => {
+      const totalCount = users.length;
+      const {edges, pageInfo} = connectionFromArray(users.filter(user => user.holdings.includes(source.id)), args)
+      const nodes = edges.map(({ node }) => node)
+      return {
+        edges,
+        nodes,
+        pageInfo: {
+          ...pageInfo,
+          count: edges.length || 0
+        },
+        totalCount,
+      }
+    }
+  },
+  User: {
+    holdings: (source, args, ctx, info) => {
+      const totalCount = stocks.length;
+      const {edges, pageInfo} = connectionFromArray(stocks.filter(stock => source.holdings.includes(stock.id)), args)
+      const nodes = edges.map(({ node }) => node)
+      return {
+        edges,
+        nodes,
+        pageInfo: {
+          ...pageInfo,
+          count: edges.length || 0
+        },
+        totalCount,
+      }
+    }
+  },
   Query: {
-    getUser: (_: unknown, { id }: { id: string }, context: unknown) => {
-      console.log("id", id, context);
-      resolveTheUser(uid)
-    },
-    getUsers: () => {
-      return users;
+    user: (source: unknown, args: UserUniqueWhereInput, context: unknown) => {
+      return users.find(user => user.id === args.id)
     },
     users: (source: unknown, args: ConnectionArgs<UserWhereInput>, context: unknown) => {
-      console.log({args})
-
       const { after, first } = args
 
       const totalCount = users.length;
 
-      const data = users.map(user => {
-        const userStocks = stocks.filter(stock => user.holdings.includes(stock.id));
-        const finalStocks = userStocks.map(stock => {
-          const usersWithStock = users.filter(user => user.holdings.includes(stock.id));
-          return Object.assign({}, stock, {
-            owner: connectionFromArray(usersWithStock, {})
-          })
-        })
-        return Object.assign({}, user, {
-          holdings: connectionFromArray(finalStocks, {})
-        })
-      })
-
       const { edges, pageInfo } = connectionFromArray(
-        data,
+        users,
         {
           after,
           first,
@@ -421,23 +427,10 @@ const resolvers = {
         totalCount,
       }
     },
-    getStock: (_: unknown, { id }: { id: string }) => {
-      const filteredStocks = stocks.filter((stockA) => stockA.id === id);
-      if (filteredStocks.length > 0) {
-        return filteredStocks[0];
-      } else {
-        return null;
-      }
-    },
-    getStocks: () => {
-      return stocks;
-    },
     stocks: (source: unknown, args: ConnectionArgs<StockWhereInput>, context: unknown) => {
-      console.log({args})
-
       const { after, first } = args
 
-      const data = stocks as Stock[];
+      const data = stocks;
       const totalCount = stocks.length;
 
       const { edges, pageInfo } = connectionFromArray(
