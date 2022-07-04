@@ -1,4 +1,4 @@
-FROM denoland/deno:alpine-1.20.6 as deps
+FROM denoland/deno:alpine-1.23.2 as deps
 WORKDIR /app
 USER deno
 COPY deps.ts .
