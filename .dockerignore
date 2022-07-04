@@ -1,0 +1,5 @@
+.vscode
+.dockerignore
+dockerfile
+fly.toml
+README.md
